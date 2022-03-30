@@ -103,12 +103,18 @@ Node* insertTail(Node* head, Student* info)
 {
 	Node* node = createInfo(info);
 	//1. connect the node to the structure
-	
-	//2. connect the structure to the node
-	Node* tmp = head;
-	while (tmp->pNext)
-		tmp = tmp->pNext;
-	tmp->pNext = node;
+	if (head == NULL)
+		head = node;
+	else
+	{
+
+
+		//2. connect the structure to the node
+		Node* tmp = head;
+		while (tmp->pNext)
+			tmp = tmp->pNext;
+		tmp->pNext = node;
+	}
 }
 
 
