@@ -1,0 +1,130 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include "stdio.h"
+#include "memory.h"
+#include "string.h"
+
+
+//SEMINAR04
+
+typedef struct Student
+{
+	char* name;
+}Student;
+
+struct Node
+{
+	Student* info;
+	struct Node* pNext;
+};
+typedef struct Node Node;
+
+/* function signatures for memory management */
+
+Student* createInfo(char*);
+Node* createNode(Student*);
+
+/*function signatures for list operation*/
+void insertHead(Node** head, Student* info);
+Node* inserTail(Node* head, Student* info);
+void printList(Node*);
+
+void main()
+{
+	Node* list = NULL;
+	FILE* pFile = fopen("Data.txt", "r");
+	char* names[100];
+	memset(names, NULL, 100 * sizeof(char*)); //100*4
+	short freq[26];
+	memset(freq, 0, 26 * sizeof(short));
+	if (pFile)
+	{
+		char buffer[128];
+		int index = 0;
+		fscanf(pFile, "%s", buffer);
+		while (!feof(pFile))
+		{
+			names[index] = (char*)malloc((strlen(buffer) + 1) * sizeof(char));
+			strcpy(names[index], buffer);
+			//int pos = names[index][0];				// direct adress
+			int pos = *(names[index++] + 0) - 'A';		//pointer adress
+			freq[pos++];
+			fscanf(pFile, "%s", buffer);
+		}
+
+
+		char** agenda[26];
+		memset(agenda, NULL, 26 * sizeof(char**));   //initialize agenda with 26 * size of char**
+
+		// I = dimens pt agenda (vectoru initial cu toate numele)
+		//j = dimens pt agenda* vectoru de frecventa pentru litere
+		//k = dimens pt fiecare nume (linia de matrice)
+
+		short tmp[26];
+		memset(tmp, freq, 26 * sizeof(short));
+
+
+		for (int i = 0; i < index; i++)
+		
+		{
+			int pos = *names[i] - 'A';
+			if (agenda[pos] == NULL)
+				agenda[pos] = (char**)malloc(sizeof(char*) * tmp[pos]);
+			agenda[pos][tmp[pos] - 1] = (char*)malloc(strlen(names[i]) + 1);
+			strcpy(agenda[pos][tmp[pos]-1], names[i]);
+			tmp[pos]--;
+		}
+
+		//printing names based on the first letter
+		for (int i = 0; i < 26; i++)
+		{
+			printf("Group %c\n", i + 'A');
+			for (int j = 0; j < freq[i]; j++)
+			{
+				printf("Name: %s\n", agenda[i][j]);
+				Student* student = createInfo(agenda[i][j]);
+				insertHead(&list, student);
+				list = inserTail(list, student);
+			}
+		}
+
+	}
+}
+
+void insertHead(Node** head, Student* info) 
+{
+	Node* node = createInfo(info);
+	//1. connect the node to the structure
+	node->pNext = *head;
+	//2. connect the structure to the node
+	*head = node;
+}
+
+Node* insertTail(Node* head, Student* info)
+{
+	Node* node = createInfo(info);
+	//1. connect the node to the structure
+	
+	//2. connect the structure to the node
+	Node* tmp = head;
+	while (tmp->pNext)
+		tmp = tmp->pNext;
+	tmp->pNext = node;
+}
+
+
+Student* createInfo(char* name)
+{
+	Student* value = (Student*)malloc(sizeof(Student));
+	value->name = (char*)malloc(strlen(name) + 1);
+	strcpy(value->name, name);
+	return value;
+}
+
+Node* createNode(Student* info)
+{
+	Node* value = (Node*)malloc(sizeof(Node));
+	value->info;
+	value->pNext = NULL;
+	return value;
+}
+
